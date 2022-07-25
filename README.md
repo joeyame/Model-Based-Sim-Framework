@@ -1,6 +1,8 @@
 # Model Based Simulation Framework
 This project is my attempt to create an effective model-based simulation framework for the modern day. It employes modern languages including Rust and Python.
 
+**This is an early draft of the framework. It is not yet ready for use.**
+
 ## Building
 One major benefit is that the entire simulation is managed by Rust's highly supported Cargo package manager. The builds are highly modular, and allow for quick integration.
 
