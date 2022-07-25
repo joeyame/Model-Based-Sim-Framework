@@ -1,0 +1,62 @@
+#!/usr/bin/python3
+import os, sys
+from pathlib import Path
+from argparse import ArgumentParser, _SubParsersAction
+from typing import List
+from termcolor import colored
+
+def run_subparser( parser: _SubParsersAction ) -> ArgumentParser:
+    """
+    The run subparser generates the parser for running the sim. Requires one
+    positional argument that states the scenario to be run. Only adds scenarios
+    that are properly configured!
+    """
+
+    scenariosPath = Path( "./scenarios" )
+    scenarioStrings: List[ str ] = []
+    for scenario in scenariosPath.glob( "*" ):
+        scenarioStrings.append( scenario.name )
+
+    run: ArgumentParser = parser.add_parser( "run", help="Execute the given simulation scenario" )
+    run.add_argument( 
+        "scenario",
+        help="Choose a scenario to run from this list",
+        choices=scenarioStrings
+    )
+    pass
+
+def parse_arguments( args=sys.argv[ 1: ] ) -> ArgumentParser:
+    parser = ArgumentParser( 
+        "sim", 
+        description=(
+            "Sim is the de-facto way to execute a model-based simulation (mbs). "
+            "In addition, this tool can also help you make models, create scenarios, "
+            "build the sim, and run it!"
+        ) 
+    )
+
+    subparsers = parser.add_subparsers( dest="subcommand" )
+    run_subparser( subparsers )
+    subparsers.add_parser( "build", help="Builds or rebuilds the simulation" )
+    subparsers.add_parser( "test", help="Runs python unit tests" )
+
+    return parser.parse_args( args )
+
+def main():
+    # Change into the main directory
+    os.chdir( Path( __file__ ).parent )
+
+    # Parse the arguments
+    args = parse_arguments()
+    
+    # Perform the action
+    if args.subcommand == "run":
+        os.system( f"{Path( './target/debug/mbs' )} {Path( __file__ ).parent / 'scenarios' / args.scenario}" )
+    elif args.subcommand == "build":
+        os.system( "cargo build" )
+    elif args.subcommand == "test":
+        print( colored( "Starting Tests:", "white", attrs=['bold'] ) )
+        os.system( "python3 -m unittest discover -p '*.py'" )
+
+if __name__ == "__main__":
+    main()
