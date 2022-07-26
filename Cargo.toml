@@ -1,17 +1,21 @@
 [package]
-name = "mbs"
+name = "sim"
 version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name="mbs"
-path="./src/rust/main.rs"
+name="sim"
+path="sim/src/main.rs"
+
+[lib]
+path="sim/src/lib.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+pyo3 = { version = "0.16.5", features = ["auto-initialize"] }
 #model = { path = "./models/base/model" }
 #force_effector = { path = "./models/base/force_effector" }
-simfrastructure = { path = "./simfrastructure" }
-eom = { path = "./models/base/eom" }
-models = { path = "./models" }
+#simfrastructure = { path = "./simfrastructure" }
+#eom = { path = "./models/base/eom" }
+#models = { path = "./models" }
