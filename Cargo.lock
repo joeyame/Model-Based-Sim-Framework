@@ -21,21 +21,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
-name = "eom"
-version = "0.1.0"
-dependencies = [
- "force_effector",
- "simfrastructure",
-]
-
-[[package]]
-name = "force_effector"
-version = "0.1.0"
-dependencies = [
- "simfrastructure",
-]
-
-[[package]]
 name = "indoc"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -55,24 +40,6 @@ checksum = "327fa5b6a6940e4699ec49a9beae1ea4845c6bab9314e4f84ac68742139d8c53"
 dependencies = [
  "autocfg",
  "scopeguard",
-]
-
-[[package]]
-name = "mbs"
-version = "0.1.0"
-dependencies = [
- "eom",
- "models",
- "simfrastructure",
-]
-
-[[package]]
-name = "models"
-version = "0.1.0"
-dependencies = [
- "eom",
- "force_effector",
- "simfrastructure",
 ]
 
 [[package]]
@@ -106,9 +73,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.40"
+version = "1.0.42"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd96a1e8ed2596c337f8eae5f24924ec83f5ad5ab21ea8e455d3566c69fbcaf7"
+checksum = "c278e965f1d8cf32d6e0e96de3d3e79712178ae67986d9cf9151f51e95aac89b"
 dependencies = [
  "unicode-ident",
 ]
@@ -197,7 +164,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 
 [[package]]
-name = "simfrastructure"
+name = "sim"
 version = "0.1.0"
 dependencies = [
  "pyo3",

@@ -8,13 +8,13 @@ One major benefit is that the entire simulation is managed by Rust's highly supp
 
 An interface tool simply titled 'sim' allows for idiomatic control over the entire process. Simply call `sim build` to invoke the cargo build system!
 ```shell
-MBS on  master [?] is 📦 v0.1.0 via 🦀 v1.62.1 
+sim on  master [?] is 📦 v0.1.0 via 🦀 v1.62.1 
 ⬢ [Systemd] ❯ sim build
-   Compiling simfrastructure v0.1.0 (/config/workspace/rust/MBS/simfrastructure)
-   Compiling force_effector v0.1.0 (/config/workspace/rust/MBS/models/base/force_effector)
-   Compiling eom v0.1.0 (/config/workspace/rust/MBS/models/base/eom)
-   Compiling models v0.1.0 (/config/workspace/rust/MBS/models)
-   Compiling mbs v0.1.0 (/config/workspace/rust/MBS)
+   Compiling simfrastructure v0.1.0 (/config/workspace/rust/sim/simfrastructure)
+   Compiling force_effector v0.1.0 (/config/workspace/rust/sim/models/base/force_effector)
+   Compiling eom v0.1.0 (/config/workspace/rust/sim/models/base/eom)
+   Compiling models v0.1.0 (/config/workspace/rust/sim/models)
+   Compiling sim v0.1.0 (/config/workspace/rust/sim)
     Finished dev [unoptimized + debuginfo] target(s) in 1.89s
 ```
 
@@ -22,9 +22,9 @@ MBS on  master [?] is 📦 v0.1.0 via 🦀 v1.62.1
 Running the simulation is just as easy. Scenarios allow you to change the sim's behavior based on a set of inputs. When you run, specify a scenario!
 
 ```shell
-MBS on  master [?] is 📦 v0.1.0 via 🦀 v1.62.1 took 2s 
+sim on  master [?] is 📦 v0.1.0 via 🦀 v1.62.1 took 2s 
 ⬢ [Systemd] ❯ sim run basic
-Generating runtime from /config/workspace/rust/MBS/scenarios/basic/runconfig.py!
+Generating runtime from /config/workspace/rust/sim/scenarios/basic/runconfig.py!
 Simulation Description: A basic system to simulate!
 Attempting to generate EOM
 Attempting to generate ForceEffector
