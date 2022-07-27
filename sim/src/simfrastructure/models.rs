@@ -1,11 +1,12 @@
 use std::fmt::Debug;
+use pyo3::prelude::FromPyObject;
 
 use crate::simfrastructure::{ModelPtr, PyAny, PyErr};
 
 #[derive(std::fmt::Debug)]
+#[derive(FromPyObject)]
 pub struct ModelDetails {
     pub order: i8,
-    pub name: String,
 }
 
 pub trait SimModelTrait: Debug {

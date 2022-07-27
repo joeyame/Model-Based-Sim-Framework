@@ -1,10 +1,12 @@
 use std::rc::Rc;
+use pyo3::FromPyObject;
 
 use crate::simfrastructure::models::{ModelDetails, SimModelTrait, ModelFromInput};
 use crate::simfrastructure::{PyAny, PyErr};
 use crate::simfrastructure::{ModelPtr};
 
 #[derive(std::fmt::Debug)]
+#[derive(FromPyObject)]
 pub struct ForceEffector {
     pub fx: i128,
     pub fy: i128,
@@ -14,22 +16,33 @@ pub struct ForceEffector {
 }
 
 pub fn new( input: &PyAny ) -> Result<ModelPtr, PyErr> {
-    Ok( 
-        Rc::new(
-            ForceEffector { 
-                // EOM-specific properties
-                fx: input.getattr( "fx" )?.extract()?, 
-                fy: input.getattr( "fy" )?.extract()?, 
-                fz: input.getattr( "fz" )?.extract()?,
+    // Ok( 
+    //     Rc::new(
+    //         ForceEffector { 
+    //             // EOM-specific properties
+    //             fx: input.getattr( "fx" )?.extract()?, 
+    //             fy: input.getattr( "fy" )?.extract()?, 
+    //             fz: input.getattr( "fz" )?.extract()?,
 
-                // General Model Properties
-                model_details: ModelDetails {
-                    name: input.getattr( "name" )?.extract()?,
-                    order: input.getattr( "order" )?.extract()?,
-                }
-            }
-        )
-    )
+    //             // General Model Properties
+    //             model_details: ModelDetails {
+    //                 // name: input.getattr( "name" )?.extract()?,
+    //                 order: input.getattr( "order" )?.extract()?,
+    //             }
+    //         }
+    //     )
+    // )
+    // let model: ForceEffector = input.extract()?;
+    // let modelPtr = Rc::new( model );
+    
+    // let model: ForceEffector = ;
+
+    Ok( Rc::<ForceEffector>::new( input.extract()? ) )
+
+    // let model: Rc<ForceEffector> = Rc::from(
+    //     input.extract()?
+    // );
+    // Ok( modelPtr )
 }
 
 impl SimModelTrait for ForceEffector {
@@ -48,22 +61,23 @@ impl SimModelTrait for ForceEffector {
 
 impl ModelFromInput for ForceEffector {
     fn new( input: &PyAny ) -> Result<ModelPtr, PyErr> {
-        Ok( 
-            Rc::new(
-                ForceEffector { 
-                    // EOM-specific properties
-                    fx: input.getattr( "fx" )?.extract()?, 
-                    fy: input.getattr( "fy" )?.extract()?, 
-                    fz: input.getattr( "fz" )?.extract()?,
+        // Ok( 
+        //     Rc::new(
+        //         ForceEffector { 
+        //             // EOM-specific properties
+        //             fx: input.getattr( "fx" )?.extract()?, 
+        //             fy: input.getattr( "fy" )?.extract()?, 
+        //             fz: input.getattr( "fz" )?.extract()?,
     
-                    // General Model Properties
-                    model_details: ModelDetails {
-                        name: input.getattr( "name" )?.extract()?,
-                        order: input.getattr( "order" )?.extract()?,
-                    }
-                }
-            )
-        )
+        //             // General Model Properties
+        //             model_details: ModelDetails {
+        //                 // name: input.getattr( "name" )?.extract()?,
+        //                 order: input.getattr( "order" )?.extract()?,
+        //             }
+        //         }
+        //     )
+        // )
+        Ok( Rc::<ForceEffector>::new( input.extract()? ) )
     }
 }
 

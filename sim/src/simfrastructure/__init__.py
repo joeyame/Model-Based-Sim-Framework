@@ -1,2 +1,2 @@
-from .python.runconfig import RunConfig
+from .python.runconfig import RunConfig, Model, ModelDetails
 from .python.utilities import unit_conversion

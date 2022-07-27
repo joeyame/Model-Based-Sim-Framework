@@ -4,27 +4,6 @@ use crate::simfrastructure::models::{ModelDetails, SimModelTrait, ModelFromInput
 use crate::simfrastructure::{PyAny, PyErr};
 use crate::simfrastructure::{ModelPtr};
 
-// pub fn new( input: &PyAny ) -> Result<ModelPtr, PyErr> {
-//     Ok( 
-//         Rc::new(
-//             EOM { 
-//                 // EOM-specific properties
-//                 x: input.getattr( "x" )?.extract()?, 
-//                 y: input.getattr( "y" )?.extract()?, 
-//                 z: input.getattr( "z" )?.extract()?, 
-
-//                 force_effectors: vec![],
-
-//                 // General Model Properties
-//                 model_details: ModelDetails {
-//                     name: input.getattr( "name" )?.extract()?,
-//                     order: input.getattr( "order" )?.extract()?,
-//                 }
-//             }
-//         ) 
-//     )
-// }
-
 #[derive(std::fmt::Debug)]
 pub struct EOM {
     pub x: i128,
@@ -50,7 +29,6 @@ impl ModelFromInput for EOM {
     
                     // General Model Properties
                     model_details: ModelDetails {
-                        name: input.getattr( "name" )?.extract()?,
                         order: input.getattr( "order" )?.extract()?,
                     }
                 }
