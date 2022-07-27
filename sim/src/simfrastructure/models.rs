@@ -19,6 +19,26 @@ pub trait ModelFromInput {
     fn new( input: &PyAny ) -> Result<ModelPtr, PyErr>;
 }
 
+// Empty reference model
+#[derive(Debug)]
+pub struct Reference {
+    pub details: ModelDetails,
+}
+
+impl SimModelTrait for Reference {
+    fn finalize( &mut self ) -> bool {
+        false
+    }
+
+    fn update( &mut self ) -> bool {
+        false
+    }
+
+    fn get_model( &mut self ) -> &ModelDetails {
+        &self.details
+    }
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
