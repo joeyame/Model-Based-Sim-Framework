@@ -1,7 +1,8 @@
+use std::cell::RefCell;
 use std::rc::Rc;
 use pyo3::FromPyObject;
 
-use crate::simfrastructure::models::{ModelDetails, SimModelTrait, ModelFromInput};
+use crate::simfrastructure::models::{ModelBase, SimModelTrait, ModelFromInput};
 use crate::simfrastructure::{PyAny, PyErr};
 use crate::simfrastructure::{ModelPtr};
 
@@ -12,7 +13,7 @@ pub struct ForceEffector {
     pub fy: i128,
     pub fz: i128,
 
-    pub model_details: ModelDetails,
+    pub model_details: ModelBase,
 }
 
 pub fn new( input: &PyAny ) -> Result<ModelPtr, PyErr> {
@@ -37,7 +38,8 @@ pub fn new( input: &PyAny ) -> Result<ModelPtr, PyErr> {
     
     // let model: ForceEffector = ;
 
-    Ok( Rc::<ForceEffector>::new( input.extract()? ) )
+    // Ok( Rc::<ForceEffector>::new( input.extract()? ) )
+    Ok( Rc::<RefCell<ForceEffector>>::new( RefCell::new( input.extract()? ) ) )
 
     // let model: Rc<ForceEffector> = Rc::from(
     //     input.extract()?
@@ -46,6 +48,10 @@ pub fn new( input: &PyAny ) -> Result<ModelPtr, PyErr> {
 }
 
 impl SimModelTrait for ForceEffector {
+    fn initialize( &mut self ) -> bool {
+        true
+    }
+
     fn update( &mut self ) -> bool {
         true
     }
@@ -54,8 +60,8 @@ impl SimModelTrait for ForceEffector {
         true
     }
 
-    fn get_model( &mut self ) -> &ModelDetails {
-        &self.model_details
+    fn get_details( &mut self ) -> &mut ModelBase {
+        &mut self.model_details
     }
 }
 
@@ -77,7 +83,7 @@ impl ModelFromInput for ForceEffector {
         //         }
         //     )
         // )
-        Ok( Rc::<ForceEffector>::new( input.extract()? ) )
+        Ok( Rc::<RefCell<ForceEffector>>::new( RefCell::new( input.extract()? ) ) )
     }
 }
 

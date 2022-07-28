@@ -1,3 +1,6 @@
+/// # Simfrastructure
+/// Simfrastructure is the infrastructure of the simulation
+
 pub mod models;
 
 // The simulation infrastructure that powers everything

@@ -1,43 +1,37 @@
+use std::cell::RefCell;
 use std::rc::Rc;
+use pyo3::FromPyObject;
 
-use crate::simfrastructure::models::{ModelDetails, SimModelTrait, ModelFromInput};
+use crate::models::force_effector::ForceEffector;
+use crate::simfrastructure::models::*;
 use crate::simfrastructure::{PyAny, PyErr};
 use crate::simfrastructure::{ModelPtr};
 
 #[derive(std::fmt::Debug)]
+#[derive(FromPyObject)]
 pub struct EOM {
     pub x: i128,
     pub y: i128,
     pub z: i128,
 
-    pub force_effectors: Vec<ModelPtr>,
+    pub force_effectors: ReferenceList<dyn SimModelTrait>,
+    // pub test: ReferenceList<ForceEffector>,
 
-    pub model_details: ModelDetails,
+    pub base: ModelBase,
 }
 
 impl ModelFromInput for EOM {
     fn new( input: &PyAny ) -> Result<ModelPtr, PyErr> {
-        Ok( 
-            Rc::new(
-                EOM { 
-                    // EOM-specific properties
-                    x: input.getattr( "x" )?.extract()?, 
-                    y: input.getattr( "y" )?.extract()?, 
-                    z: input.getattr( "z" )?.extract()?, 
-    
-                    force_effectors: vec![],
-    
-                    // General Model Properties
-                    model_details: ModelDetails {
-                        order: input.getattr( "order" )?.extract()?,
-                    }
-                }
-            ) 
-        )
+        Ok( Rc::<RefCell<EOM>>::new( RefCell::new( input.extract()? ) ) )
     }
 }
 
 impl SimModelTrait for EOM {
+    fn initialize( &mut self ) -> bool {
+        println!( "{:?}", self.force_effectors );
+        true
+    }
+
     fn update( &mut self ) -> bool {
         true
     }
@@ -46,8 +40,8 @@ impl SimModelTrait for EOM {
         true
     }
 
-    fn get_model( &mut self ) -> &ModelDetails {
-        &self.model_details
+    fn get_details( &mut self ) -> &mut ModelBase {
+        &mut self.base
     }
 }
 

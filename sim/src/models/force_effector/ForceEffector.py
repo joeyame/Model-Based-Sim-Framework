@@ -2,7 +2,7 @@
 a ForceEffector object in the simulation configuration."""
 
 from dataclasses import dataclass
-from simfrastructure import Model, ModelDetails
+from simfrastructure import Model, ModelBase
 
 @dataclass
 class ForceEffector( Model ):
@@ -12,4 +12,4 @@ class ForceEffector( Model ):
     fy: int
     fz: int
 
-    model_details: ModelDetails
+    model_details: ModelBase
