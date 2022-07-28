@@ -40,18 +40,25 @@ def parse_arguments( args=sys.argv[ 1: ] ) -> ArgumentParser:
     subparsers.add_parser( "build", help="Builds or rebuilds the simulation" )
     subparsers.add_parser( "test", help="Runs python unit tests" )
 
-    return parser.parse_args( args )
+    return parser.parse_known_args( args )
+    # return parser.parse_args( args )
 
 def main():
     # Change into the main directory
     os.chdir( Path( __file__ ).parent.parent.parent )
 
     # Parse the arguments
-    args = parse_arguments()
-    
+    args, unknown = parse_arguments()
+
     # Perform the action
     if args.subcommand == "run":
-        os.system( f"{Path( './output/debug/sim' )} {Path( __file__ ).parent.parent / 'scenarios' / args.scenario}" )
+        simargs = ""
+        for un in unknown:
+            if ' ' in un:
+                simargs = simargs + ' "' + un + '"'
+            else:
+                simargs = simargs + " " + un
+        os.system( f"{Path( './output/debug/sim' )} {Path( __file__ ).parent.parent / 'scenarios' / args.scenario}" + simargs )
     elif args.subcommand == "build":
         os.system( "cargo build" )
     elif args.subcommand == "test":
