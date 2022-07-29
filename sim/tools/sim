@@ -45,6 +45,7 @@ def parse_arguments( args=sys.argv[ 1: ] ) -> ArgumentParser:
 
 def main():
     # Change into the main directory
+    starting_dir = Path.cwd()
     os.chdir( Path( __file__ ).parent.parent.parent )
 
     # Parse the arguments
@@ -62,8 +63,10 @@ def main():
     elif args.subcommand == "build":
         os.system( "cargo build" )
     elif args.subcommand == "test":
+        # Change back to current dir
+        os.chdir( starting_dir )
         print( colored( "Starting Tests:", "white", attrs=['bold'] ) )
-        os.system( "python3 -m unittest discover -p '*.py'" )
+        os.system( "python -m unittest discover -p '*.py'" )
 
 if __name__ == "__main__":
     main()
