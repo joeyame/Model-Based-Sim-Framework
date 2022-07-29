@@ -7,14 +7,13 @@ from models.eom import EOM
 from simfrastructure.python.runconfig import *
 
 # Create models here
-base = ModelBase( 100, 200 )
 force = ForceEffector( 0, 10, 20, ModelBase( 100, 200 ) )
 eom = EOM(
     x=0,
     y=0,
     z=0,
-    force_effectors=ReferenceList( ),
-    base=base
+    force_effectors=ReferenceList( force ),
+    base=ModelBase( 100, 200 )
 )
 
 # Create the actual configuration
