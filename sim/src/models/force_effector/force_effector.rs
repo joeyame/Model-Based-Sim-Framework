@@ -1,3 +1,4 @@
+use std::any::Any;
 use std::cell::RefCell;
 use std::rc::Rc;
 use pyo3::FromPyObject;
@@ -13,7 +14,7 @@ pub struct ForceEffector {
     pub fy: i128,
     pub fz: i128,
 
-    pub model_details: ModelBase,
+    pub base: ModelBase,
 }
 
 pub fn new( input: &PyAny ) -> Result<ModelPtr, PyErr> {
@@ -61,7 +62,11 @@ impl SimModelTrait for ForceEffector {
     }
 
     fn get_details( &mut self ) -> &mut ModelBase {
-        &mut self.model_details
+        &mut self.base
+    }
+
+    fn as_any(&mut self) -> &mut dyn Any {
+        self
     }
 }
 

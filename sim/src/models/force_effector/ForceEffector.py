@@ -12,4 +12,4 @@ class ForceEffector( Model ):
     fy: int
     fz: int
 
-    model_details: ModelBase
+    base: ModelBase

@@ -1,9 +1,9 @@
-use std::{fmt::Debug, collections::HashMap, rc::Rc};
+use std::{fmt::Debug, collections::HashMap, rc::Rc, any::Any};
 use pyo3::prelude::*;
 
 use super::*;
 
-#[derive(std::fmt::Debug)]
+#[derive(Debug)]
 #[derive(FromPyObject)]
 pub struct ModelBase {
     pub order: i8,
@@ -15,8 +15,9 @@ pub trait SimModelTrait: Debug {
     fn resolve_references( &mut self, global_model_list: &HashMap<ModelID, ModelPtr> ) {
         let locals = &mut self.get_details().local_refs;
         for id in &locals.reference_ids {
+            // println!( "{}", id );
             locals.reference_list.push( 
-                Rc::downgrade( global_model_list.get( id ).unwrap() )
+                Rc::downgrade( &global_model_list.get( id ).unwrap() )
             )
         }
     }
@@ -25,6 +26,7 @@ pub trait SimModelTrait: Debug {
     fn initialize( &mut self ) -> bool;
     fn update( &mut self ) -> bool;
     fn finalize( &mut self ) -> bool;
+    fn as_any(&mut self) -> &mut dyn Any;
 
     // Necessary return functions
     fn get_details( &mut self ) -> &mut ModelBase;

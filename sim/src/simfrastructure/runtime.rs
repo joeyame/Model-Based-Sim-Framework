@@ -67,8 +67,13 @@ impl Runtime {
         }).unwrap();
 
         // Connect references
-        for ( id, model ) in &runtime.model_list {
+        for ( _id, model ) in &runtime.model_list {
             model.borrow_mut().resolve_references( &runtime.model_list )
+        }
+
+        // Initialize models
+        for ( _id, model ) in &runtime.model_list {
+            model.borrow_mut().initialize();
         }
 
         return runtime
