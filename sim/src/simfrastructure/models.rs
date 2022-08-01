@@ -2,20 +2,48 @@ use std::{fmt::Debug, collections::HashMap, rc::Rc, any::Any};
 use pyo3::prelude::*;
 
 use super::*;
+use super::references::ReferenceList;
 
-#[derive(Debug)]
-#[derive(FromPyObject)]
+#[derive(Debug, FromPyObject)]
 pub struct ModelBase {
     pub order: i8,
     pub id: ModelID,
     pub local_refs: ReferenceList<dyn SimModelTrait>,
+    // pub global_model_list: HashMap<ModelID, ModelPtr>
+}
+
+// impl FromPyObject<'_> for ModelBase {
+//     fn extract(ob: &PyAny) -> PyResult<Self> {
+//         Ok(
+//             Self {
+//                 order: ob.getattr( "order" )?.extract()?,
+//                 id: ob.getattr( "id" )?.extract()?,
+//                 local_refs: ob.getattr( "local_refs" )?.extract()?,
+//                 // runtime: Runtime { run: -1, model_list: HashMap::new() }
+//             }
+//         )
+//     }
+// }
+
+pub trait ModelFromInput {
+    fn new( input: &PyAny ) -> Result<ModelPtr, PyErr>;
 }
 
 pub trait SimModelTrait: Debug {
+    
+    /// A model should provide a custom implementation of this function if
+    /// it needs to fill its reference lists
     fn resolve_references( &mut self, global_model_list: &HashMap<ModelID, ModelPtr> ) {
+        let _temp = global_model_list;
+    }
+
+    /// ## ***This function should never be modified!!!***
+    /// It populates a model's local_refs, which is an operation that 
+    /// shouldn't ever need to be changed. If you need to connect references 
+    /// manually, consider using ``` resolve_references ``` instead!
+    fn resolve_global_refs( &mut self, global_model_list: &HashMap<ModelID, ModelPtr> ) {
         let locals = &mut self.get_details().local_refs;
         for id in &locals.reference_ids {
-            // println!( "{}", id );
             locals.reference_list.push( 
                 Rc::downgrade( &global_model_list.get( id ).unwrap() )
             )
@@ -32,26 +60,7 @@ pub trait SimModelTrait: Debug {
     fn get_details( &mut self ) -> &mut ModelBase;
 }
 
-pub trait ModelFromInput {
-    fn new( input: &PyAny ) -> Result<ModelPtr, PyErr>;
-}
-
-#[derive(Debug)]
-pub struct ReferenceList<T: ?Sized + SimModelTrait> {
-    pub reference_ids: Vec<ModelID>,
-    pub reference_list: Vec<WeakModelPtr<T>>,
-}
-
-impl<T: ?Sized + SimModelTrait> FromPyObject<'_> for ReferenceList<T> {
-    fn extract(ob: &PyAny) -> PyResult< Self > {
-        Ok( 
-            Self {
-                reference_ids: ob.getattr( "reference_ids" )?.extract()?,
-                reference_list: vec![],
-            } 
-        )
-    }
-}
+pub trait Model: ModelFromInput + SimModelTrait {}
 
 // #[derive(Debug, FromPyObject)]
 // pub enum ModelRef {

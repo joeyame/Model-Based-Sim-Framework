@@ -6,6 +6,7 @@ use pyo3::{prelude::*, types::PyList};
 // Local crate imports
 use crate::simfrastructure::{ModelCreatorMap, ModelPtr, ModelID};
 
+#[derive(Debug)]
 pub struct Runtime {
     pub run: i8,
     pub model_list: HashMap<ModelID, ModelPtr>
@@ -68,7 +69,13 @@ impl Runtime {
 
         // Connect references
         for ( _id, model ) in &runtime.model_list {
-            model.borrow_mut().resolve_references( &runtime.model_list )
+            let mut model = model.borrow_mut();
+
+            // Connect the global refs
+            model.resolve_global_refs( &runtime.model_list );
+
+            // Specialized reference connection
+            model.resolve_references( &runtime.model_list );
         }
 
         // Initialize models

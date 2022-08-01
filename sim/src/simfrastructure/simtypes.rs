@@ -28,3 +28,4 @@ pub type ModelCreatorFn = fn( &PyAny )->Result<ModelPtr, PyErr>;
 /// string. This can easily be called on a Python object to get its type
 /// and then delegate it to the proper Rust model.
 pub type ModelCreatorMap = HashMap<String, ModelCreatorFn>;
+pub type ModelIdMap = HashMap<ModelID, ModelPtr>;

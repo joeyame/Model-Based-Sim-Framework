@@ -40,7 +40,7 @@ class ReferenceList:
             for model in self.references:
                 self.reference_ids.append( model.base.id )
         else:
-            self.reference_ids.append( self.references.model_details.id )
+            self.reference_ids.append( self.references.base.id )
 
 @dataclass
 class ModelBase:

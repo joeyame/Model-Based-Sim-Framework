@@ -1,10 +1,9 @@
 use std::any::Any;
 use std::cell::RefCell;
 use std::rc::Rc;
-use pyo3::FromPyObject;
+use pyo3::{FromPyObject, PyAny, PyErr};
 
 use crate::simfrastructure::models::{ModelBase, SimModelTrait, ModelFromInput};
-use crate::simfrastructure::{PyAny, PyErr};
 use crate::simfrastructure::{ModelPtr};
 
 #[derive(std::fmt::Debug)]
