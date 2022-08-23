@@ -1,2 +1,2 @@
 pub mod eom;
-pub use eom::{new, EOM};
+pub use eom::{EOM};

@@ -1,65 +1,61 @@
+use std::any::Any;
+use std::borrow::BorrowMut;
+use std::cell::{RefCell};
+use std::collections::HashMap;
+use std::ops::Deref;
 use std::rc::Rc;
+use pyo3::{FromPyObject, PyAny, PyErr};
 
-use crate::simfrastructure::models::{ModelDetails, SimModelTrait, ModelFromInput};
-use crate::simfrastructure::{PyAny, PyErr};
+use crate::models::force_effector::ForceEffector;
+use crate::simfrastructure::{models::*};
 use crate::simfrastructure::{ModelPtr};
+use crate::simfrastructure::models::SimModelTrait;
 
-pub fn new( input: &PyAny ) -> Result<ModelPtr, PyErr> {
-    Ok( 
-        Rc::new(
-            EOM { 
-                // EOM-specific properties
-                x: input.getattr( "x" )?.extract()?, 
-                y: input.getattr( "y" )?.extract()?, 
-                z: input.getattr( "z" )?.extract()?, 
-
-                force_effectors: vec![],
-
-                // General Model Properties
-                model_details: ModelDetails {
-                    name: input.getattr( "name" )?.extract()?,
-                    order: input.getattr( "order" )?.extract()?,
-                }
-            }
-        ) 
-    )
-}
+use crate::simfrastructure::*;
 
 #[derive(std::fmt::Debug)]
+#[derive(FromPyObject)]
 pub struct EOM {
     pub x: i128,
     pub y: i128,
     pub z: i128,
 
-    pub force_effectors: Vec<ModelPtr>,
+    pub force_effectors: ReferenceList<ForceEffector>,
 
-    pub model_details: ModelDetails,
+    pub base: ModelBase,
 }
 
 impl ModelFromInput for EOM {
     fn new( input: &PyAny ) -> Result<ModelPtr, PyErr> {
-        Ok( 
-            Rc::new(
-                EOM { 
-                    // EOM-specific properties
-                    x: input.getattr( "x" )?.extract()?, 
-                    y: input.getattr( "y" )?.extract()?, 
-                    z: input.getattr( "z" )?.extract()?, 
-    
-                    force_effectors: vec![],
-    
-                    // General Model Properties
-                    model_details: ModelDetails {
-                        name: input.getattr( "name" )?.extract()?,
-                        order: input.getattr( "order" )?.extract()?,
-                    }
-                }
-            ) 
-        )
+        Ok( Rc::<RefCell<EOM>>::new( RefCell::new( input.extract()? ) ) )
     }
 }
 
 impl SimModelTrait for EOM {
+
+    fn resolve_references( &mut self, global_model_list: &std::collections::HashMap<ModelID, ModelPtr> ) {
+        // self.force_effectors.populate_refs( global_model_list as &HashMap<ModelID, Rc<RefCell<ForceEffector>>> ).expect(
+        //     "Failed to connect references!"
+        // );
+
+        // let jj = self.force_effectors.reference_list[0].upgrade().borrow_mut();
+        
+    }
+
+    fn initialize( &mut self ) -> bool {
+        println!( "EOM Model is referencing:" );
+        for reference in &self.base.local_refs.reference_list {
+            let upgraded = reference.upgrade().unwrap();
+            let mut contents = upgraded.deref().borrow_mut();
+            if let Some( force_model ) = contents.as_any().downcast_mut::<ForceEffector>() {
+                println!( " - Force ID: {}", force_model.get_details().id );
+                force_model.get_details().id = 5;
+                println!( " - Force ID (new): {}", force_model.get_details().id );
+            }
+        }
+        true
+    }
+
     fn update( &mut self ) -> bool {
         true
     }
@@ -68,10 +64,16 @@ impl SimModelTrait for EOM {
         true
     }
 
-    fn get_model( &mut self ) -> &ModelDetails {
-        &self.model_details
+    fn get_details( &mut self ) -> &mut ModelBase {
+        &mut self.base
+    }
+
+    fn as_any(&mut self) -> &mut dyn Any {
+        self
     }
 }
+
+impl Model for EOM {}
 
 
 #[cfg(test)]

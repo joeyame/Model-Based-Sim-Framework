@@ -1,13 +1,26 @@
 # Import simulation infrastructure components
-from simfrastructure import RunConfig
+from simfrastructure import RunConfig, sim_args
 
 # Import input models
-from input import eom, force_effector
+from models.force_effector import ForceEffector
+from models.eom import EOM
+from simfrastructure.python.runconfig import *
 
+# Create models here
+force = ForceEffector( 0, 10, 20, ModelBase( 100, 200 ) )
+eom = EOM(
+    x=0,
+    y=0,
+    z=0,
+    force_effectors=ReferenceList( force ),
+    base=ModelBase( 100, 200 )
+)
+
+# Create the actual configuration
 config = RunConfig( 
-    model_list=[
-        eom.model,
-        force_effector.model,
-    ],
-    description="A basic system to simulate!"
+    # Description
+    "A basic system to simulate!",
+
+    # Define models:
+    ModelGroup( eom, force )
 )

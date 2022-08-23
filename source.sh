@@ -1,17 +1,17 @@
 # Find important directories
-sim_directory="$(dirname $BASH_SOURCE)/sim"
-parent_dir="$(dirname $BASH_SOURCE)"
+file="$(realpath $BASH_SOURCE)"
+sim_directory="$(dirname $file)/sim"
+parent_dir="$(dirname $file)"
 
 # Create venv
-if [ ! -d "$(pwd)/$parent_dir/sim-env" ]; then
+if [ ! -d "$parent_dir/sim-env" ]; then
   echo "Generating Python venv..."
-  python -m venv $(pwd)/$parent_dir/sim-env && source sim-env/bin/activate && pip install -r $(pwd)/$parent_dir/pyRequirements.txt
-  echo "Done!"
+  python -m venv $parent_dir/sim-env && source $parent_dir/sim-env/bin/activate && pip install -r $parent_dir/pyRequirements.txt && echo "Done!"
 fi
 
 # Add to venv PYTHONPATH
-echo "$(pwd)/$sim_directory/tools" > "$parent_dir/sim-env/lib/python3.8/site-packages/sim_tools.pth"
-echo "$(pwd)/$sim_directory/src" > "$parent_dir/sim-env/lib/python3.8/site-packages/sim_src.pth"
+echo "$sim_directory/tools" > "$parent_dir/sim-env/lib/python3.8/site-packages/sim_tools.pth"
+echo "$sim_directory/src" > "$parent_dir/sim-env/lib/python3.8/site-packages/sim_src.pth"
 # echo "$(pwd)/$sim_directory/src/simfrastructure" > "$parent_dir/sim-env/lib/python3.8/site-packages/sim_infrastructure.pth"
 
 # Source python venv
